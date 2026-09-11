@@ -1,6 +1,6 @@
 # ML Stiffness/Damping Mistuning Identification (GMM-based)
 
-Single script (`gmm_mistuning_id.py`) that:
+Single notebook (`gmm_mistuning_id.ipynb`) that:
 
 1. Builds a reduced order bladed-disk model (2 DOF per sector: one disk DOF,
    one blade DOF, `N` sectors) with stiffness and damping mistuning added the
@@ -14,7 +14,7 @@ Single script (`gmm_mistuning_id.py`) that:
    component matrices, which aren't available here, so this uses the
    classic 2-DOF-per-sector lumped model instead (which is also the minimal
    ROM size GMM itself reduces to, `2N`). Swap `build_K`/`build_C` for
-   matrices exported from an actual GMM run and the rest of the script
+   matrices exported from an actual GMM run and the rest of the notebook
    (dataset generation + ML) works unchanged.
 
 2. Generates training data by running many random mistuning patterns through
@@ -30,10 +30,15 @@ Single script (`gmm_mistuning_id.py`) that:
 Run it with:
 
 ```
-pip install -r requirements.txt
-python3 gmm_mistuning_id.py
+pip install -r requirements.txt jupyter
+jupyter notebook gmm_mistuning_id.ipynb
 ```
 
-Outputs: `results_tuned_response.png` (sanity check of the tuned forced
-response) and `results_<case>.png` (true vs. predicted mistuning scatter
-plots with R2/RMSE) for each of the three cases.
+(or run non-interactively with `jupyter nbconvert --to notebook --execute --inplace gmm_mistuning_id.ipynb`)
+
+Outputs (also saved to disk when the notebook is run): `results_tuned_response.png`
+(sanity check of the tuned forced response) and `results_<case>.png` (true
+vs. predicted mistuning scatter plots with R2/RMSE) for each of the three
+cases. The committed notebook already has these plots and R2/RMSE values
+embedded in its cell outputs, so you can read the results without re-running
+it.
