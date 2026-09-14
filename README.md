@@ -42,3 +42,14 @@ vs. predicted mistuning scatter plots with R2/RMSE) for each of the three
 cases. The committed notebook already has these plots and R2/RMSE values
 embedded in its cell outputs, so you can read the results without re-running
 it.
+
+## Loading real FE data from ANSYS MAPDL
+
+`ansys_gmm/` builds the GMM reduced order model from actual single-sector
+ANSYS `.full` files (mass/stiffness matrices) instead of the hand-built
+lumped model above, for when you've solved your own sector model in MAPDL.
+**Its tuned-ROM natural frequencies are not yet fully validated** -- see
+`ansys_gmm/README.md` for what's exported/required, what's verified
+correct, and the known open issue (right ballpark, not yet exact, on the
+disk+blade coupled system). Run `python3 -m ansys_gmm.validate_rom` to see
+the current validation status against a synthetic toy sector.
