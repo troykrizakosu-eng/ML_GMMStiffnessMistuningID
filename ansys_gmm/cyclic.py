@@ -14,9 +14,12 @@ For a traveling-wave solution with nodal diameter d (0 <= d <= N/2), the
 Bloch condition u_R = u_L * exp(i*2*pi*d/N) eliminates R, leaving a small
 complex Hermitian generalized eigenvalue problem in [u_L; u_I]. Solving it
 per d gives the disk's cyclic normal modes and their frequencies (Fig. 2 of
-the paper). Combining the +d/-d solutions gives two REAL spatial patterns
-per mode (a cosine and a sine harmonic), which is what lets mistuning be
-applied directly as real, physical per-sector quantities.
+the paper) -- the same modes GMM_Tuned.m loads directly from an ANSYS
+CYCLIC modal solve (Load_Phi) rather than computing here, since raw FE
+matrices are what this package works from instead. rom.py combines a
+mode's real and imaginary parts (real part = cosine harmonic, -imaginary
+part = sine harmonic) via real_fourier_matrix the same way GMM_Tuned.m's
+`kron(RFM(i,:), I) * DPhiBLKD` does.
 
 Everything here works on sparse matrices and only ever forms a dense array
 for the (small) reduced [L;I] problem at a single nodal diameter -- the
@@ -102,16 +105,3 @@ def cyclic_normal_modes(K, M, low_idx, high_idx, interior_idx, n_sectors, n_mode
             shape_I = shape_I * np.exp(-1j * np.angle(shape_I[k_max]))
             modes.append(dict(d=d, kind=kind, omega=np.sqrt(w2[r]), shape=shape_I))
     return modes
-
-
-def sector_columns(mode, n, n_sectors):
-    """Real physical pattern(s) (over `interior_idx`) for sector n (0-indexed)
-    contributed by one cyclic mode. Returns a list of 1 (kind='single') or 2
-    (kind='pair', cosine then sine) real column vectors."""
-    theta = 2 * np.pi * mode["d"] * n / n_sectors
-    re, im = mode["shape"].real, mode["shape"].imag
-    if mode["kind"] == "single":
-        return [re * np.cos(theta)]
-    cos_col = re * np.cos(theta) - im * np.sin(theta)
-    sin_col = re * np.sin(theta) + im * np.cos(theta)
-    return [cos_col, sin_col]

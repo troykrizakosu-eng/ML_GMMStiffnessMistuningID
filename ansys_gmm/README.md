@@ -1,10 +1,18 @@
 # ansys_gmm: loading real FE data from ANSYS MAPDL
 
-Builds a GMM-style reduced order model directly from raw ANSYS single-sector
-FE matrices, instead of the hand-built lumped 2-DOF-per-sector model in
-`gmm_mistuning_id.ipynb`. **Read the VALIDATION STATUS note at the top of
-`rom.py` before trusting its output** -- the mistuning delta matrices are
-verified exact, the tuned ROM's natural frequencies are not yet.
+Builds a GMM reduced order model directly from raw ANSYS single-sector FE
+matrices (`.full` files), rather than from pre-exported CB/cyclic mode
+shapes the way `gmm_mistuning_id.ipynb` and the original MATLAB code
+(`GMM_Tuned.m` etc.) do. It uses the same real-Fourier-matrix assembly
+those do (`rom.real_fourier_matrix`, matching MATLAB's
+`real_fourier_matrix.m` and `kron(RFM(i,:), I) * DPhiBLKD`); the
+difference is only where the disk's cyclic mode shapes come from --
+here they're computed in Python from raw `.full` matrices
+(`cyclic.cyclic_normal_modes`, a Bloch/complex cyclic-symmetry solve)
+instead of loaded from a pre-run ANSYS `CYCLIC` modal solve. **Read the
+VALIDATION STATUS note at the top of `rom.py` before trusting its
+output** -- the mistuning delta matrices are verified exact, the tuned
+ROM's natural frequencies are not yet.
 
 ## What to export from MAPDL
 
